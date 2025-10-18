@@ -1,0 +1,32 @@
+spring:
+  config:
+    import: "nacos:aitravel-service-dev.yaml"
+  application:
+    name: aitravel-service
+  # 设置激活的配置文件
+  profiles:
+    active: dev
+  cloud:
+    nacos:
+      discovery:
+        server-addr: ${XXCD_NACOS_ADDR}
+        username: ${XXCD_NACOS_ACCOUNT}
+        password: ${XXCD_NACOS_PASSWORD}
+        namespace: ${XXCD_NACOS_NAMESPACE}
+      config:
+        server-addr: ${XXCD_NACOS_ADDR}
+        username: ${XXCD_NACOS_ACCOUNT}
+        password: ${XXCD_NACOS_PASSWORD}
+        # 配置文件前缀
+        prefix: ${spring.application.name}
+        file-extension: yaml
+        namespace: ${XXCD_NACOS_NAMESPACE}
+        group: dev
+        shared-configs:
+          - # 配置数据
+          - data-id: common.yaml
+            # 设置分组
+            group: dev
+            # 是否动态刷新
+            refresh: true
+

@@ -1,0 +1,48 @@
+server:
+  port: 8080
+feign:
+  sentinel:
+    # 是否启用Sentinel对Feign的支持
+    enabled: true
+spring:
+  cloud:
+    openfeign:
+      client:
+        config:
+          default:
+            # 设置读取超时时间为10秒
+            read-timeout: 10000
+            # 设置连接超时时间为10秒
+            connect-timeout: 10000
+            # 记录请求方法、URL、响应状态和执行时间
+            logger-level: basic
+    gateway:
+      discovery:
+        locator:
+          # 是否启用基于服务发现的路由
+          enabled: true
+      globalcors:
+        cors-configurations:
+          # 为所有路径配置CORS设置
+          '[/**]':
+            # 允许的来源模式，"*"表示允许所有来源
+            allowed-origin-patterns: "*"
+            # 允许携带凭证
+            allow-credentials: true
+            # 允许的HTTP方法
+            allowed-methods:
+              - GET
+              - POST
+              - DELETE
+              - PUT
+              - OPTIONS
+            # 允许的请求头
+            allowed-headers: "*"
+            # 预检请求的缓存时间，单位为秒
+            max-age: 3600
+      routes:
+        # 定义路由规则，智能旅游服务路由
+        - id: aitravel-service
+          uri: lb://aitravel-service
+          predicates:
+            - Path=/*/aitravel/**

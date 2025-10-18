@@ -1,0 +1,63 @@
+# 配置大模型
+langchain4j:
+  # 配置Open AI模型
+  open-ai:
+    # 配置模型
+    chat-model:
+      # 设置APIKEY
+#      api-key: ${DEEPSEEK_APIKEY}
+      api-key: ${DASH_SCOPE_API_KEY}
+      # 设置模型名称
+#      model-name: deepseek-reasoner
+      model-name: qwen-plus-2025-07-28
+      # 设置请求URL
+#      base-url: "https://api.deepseek.com/v1"
+      base-url: "https://dashscope.aliyuncs.com/compatible-mode/v1"
+      # 请求日志
+      log-requests: true
+      # 响应日志
+      log-responses: true
+    # 流式输出模型
+    streaming-chat-model:
+      # 设置API-KEY
+      api-key: ${DASH_SCOPE_API_KEY}
+      # 设置模型名称
+      model-name: qwen-plus-2025-07-28
+      # 设置请求URL
+      base-url: "https://dashscope.aliyuncs.com/compatible-mode/v1"
+  # 配置非Open AI模型
+  community:
+    # 配置DashScope模型-通义千问系列
+    dashscope:
+      # 配置文本嵌入式模型-即向量模型
+      embedding-model:
+        # 设置请求URL
+        base-url: "https://dashscope.aliyuncs.com/api/v1/"
+        # 获取API-KEY
+        api-key: ${DASH_SCOPE_API_KEY}
+        # 设置模型名称
+        model-name: "text-embedding-v4"
+# 设置日志级别为DEBUG
+logging:
+  level:
+    root: info
+# 数据库配置
+spring:
+  data:
+    # 配置MongoDB连接
+    mongodb:
+      # 配置主机地址
+      host: ${XXCD_MONGO_ADDR}
+      username: ${XXCD_MONGO_ACCOUNT}
+      password: ${XXCD_MONGO_PASSWORD}
+      port: 27017
+      database: aitravel
+      # 校验数据库
+      authentication-database: admin
+
+  # 配置数据库连接
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: ${XXCD_MYSQL_URL}
+    username: ${XXCD_MYSQL_ACCOUNT}
+    password: ${XXCD_MYSQL_PASSWORD}

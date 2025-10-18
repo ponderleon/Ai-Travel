@@ -1,0 +1,41 @@
+spring:
+  config:
+    import: "nacos:gateway-service-dev.yaml"
+  application:
+    name: gateway-service
+  profiles:
+    active: dev
+  cloud:
+    nacos:
+      discovery:
+        # 服务地址
+        server-addr: ${XXCD_NACOS_ADDR}
+        # 账号
+        username: ${XXCD_NACOS_ACCOUNT}
+        # 密码
+        password: ${XXCD_NACOS_PASSWORD}
+        # 命名空间
+        namespace: ${XXCD_NACOS_NAMESPACE}
+      config:
+        # 服务地址
+        server-addr: ${XXCD_NACOS_ADDR}
+        # 账号
+        username: ${XXCD_NACOS_ACCOUNT}
+        # 密码
+        password: ${XXCD_NACOS_PASSWORD}
+        # 文件前缀
+        prefix: ${spring.application.name}
+        # 文件类型
+        file-extension: yaml
+        # 命名空间
+        namespace: ${XXCD_NACOS_NAMESPACE}
+        # 分组
+        group: dev
+        # 共享配置
+        shared-configs:
+          # 数据
+          - data-id: common.yaml
+            # 分组
+            group: dev
+            # 是否动态刷新
+            refresh: true

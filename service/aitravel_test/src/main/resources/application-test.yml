@@ -1,0 +1,45 @@
+langchain4j:
+  open-ai:
+    # 配置聊天模型
+    chat-model:
+      # 配置请求URL
+      base-url: "https://dashscope.aliyuncs.com/compatible-mode/v1"
+      # 配置API-KEY
+      api-key: ${DASH_SCOPE_API_KEY}
+      # 配置模型名称
+      model-name: "qwen-plus-2025-07-28"
+      # 开启请求日志
+      log-requests: true
+      # 开启响应日志
+      log-responses: true
+#    # 配置图像生成模型
+#    image-model:
+#      api-key: ${DASH_SCOPE_API_KEY}
+#      base-url: "https://dashscope.aliyuncs.com/compatible-mode/v1"
+#      model-name: "wan2.5-t2i-preview"
+#      log-requests: true
+#      log-responses: true
+  community:
+    dashscope:
+      # 配置文本嵌入式模型-即向量模型
+      embedding-model:
+        api-key: ${DASH_SCOPE_API_KEY}
+        base-url: "https://dashscope.aliyuncs.com/api/v1/"
+        model-name: "text-embedding-v4"
+# 数据库配置
+spring:
+  data:
+    # 配置MongoDB连接
+    mongodb:
+      # 配置主机地址
+      host: mongo.xxcd.de
+      username: mongodb
+      password: "geqThSue^N95ZPo0(TEXy^KQlG%YovCjHK4S*cM)GO#dpFq@C^co%)91oSW4"
+      port: 27017
+      database: aitravel
+      # 校验数据库
+      authentication-database: admin
+logging:
+  # 配置日志级别
+  level:
+    root: info
