@@ -22,7 +22,7 @@ public class ChatMessages {
      * 聊天记忆ID
      */
     @Schema(description = "聊天记忆ID")
-    private Long memoryId;
+    private String memoryId;
 
     /**
      * 用户ID

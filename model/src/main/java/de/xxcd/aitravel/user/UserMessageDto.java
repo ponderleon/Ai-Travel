@@ -8,7 +8,7 @@ import lombok.Data;
 public class UserMessageDto {
 
     @Schema(description = "聊天记忆ID")
-    private Long memoryId;
+    private String memoryId;
 
     @Schema(description = "用户消息")
     private String message;

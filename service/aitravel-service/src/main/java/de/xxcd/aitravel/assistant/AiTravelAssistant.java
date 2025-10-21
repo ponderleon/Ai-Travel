@@ -23,6 +23,6 @@ public interface AiTravelAssistant {
      */
     @SystemMessage(fromResource = "system-prompt-template.txt")
     @UserMessage(fromResource = "user-prompt-template.txt")
-    Flux<String> chat(@MemoryId Long memoryId, @V("userMessage") String message);
+    Flux<String> chat(@MemoryId String memoryId, @V("userMessage") String message);
 
 }

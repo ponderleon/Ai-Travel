@@ -18,6 +18,7 @@ import dev.langchain4j.service.tool.ToolProvider;
 import dev.langchain4j.store.embedding.EmbeddingStore;
 import dev.langchain4j.store.embedding.pinecone.PineconeEmbeddingStore;
 import dev.langchain4j.store.embedding.pinecone.PineconeServerlessIndexConfig;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -27,7 +28,6 @@ import java.util.Map;
 @Configuration
 public class LangChain4jConfig {
 
-    // TODO 需要配置MCP（时间、高德）、流失输出、自定义创建AiTravelAssistant等
 
     /**
      * 创建高德地图MCP传输
@@ -60,7 +60,7 @@ public class LangChain4jConfig {
      * @return McpClient
      */
     @Bean
-    public McpClient amapMapsMcpClient(McpTransport amapMapsMcpTransport){
+    public McpClient amapMapsMcpClient(@Qualifier("amapMapsMcpTransport") McpTransport amapMapsMcpTransport){
         return new DefaultMcpClient.Builder()
                 .clientName("AmapMapsMcpClient") // 设置客户端名称
                 .clientVersion("1.0.0") // 设置客户端版本
@@ -74,7 +74,7 @@ public class LangChain4jConfig {
      * @return McpClient
      */
     @Bean
-    public McpClient timeMcpClient(McpTransport timeMcpTransport){
+    public McpClient timeMcpClient(@Qualifier("timeMcpTransport") McpTransport timeMcpTransport){
         return new DefaultMcpClient.Builder()
                 .clientName("TimeMcpClient") // 设置客户端名称
                 .clientVersion("1.0.0") // 设置客户端版本
@@ -90,11 +90,12 @@ public class LangChain4jConfig {
      * @return ToolProvider
      */
     @Bean
-    public ToolProvider mcpToolProvider(McpClient amapMapsMcpClient, McpClient timeMcpClient){
+    public ToolProvider mcpToolProvider(@Qualifier("amapMapsMcpClient") McpClient amapMapsMcpClient,
+                                        @Qualifier("timeMcpClient") McpClient timeMcpClient){
 
-        return McpToolProvider.builder()
-                .mcpClients(amapMapsMcpClient,timeMcpClient)
-                .build();
+        return McpToolProvider.builder() // 创建MCP工具提供者
+                .mcpClients(amapMapsMcpClient,timeMcpClient) // 添加MCP客户端
+                .build(); // 创建MCP工具提供者
 
     }
 
@@ -106,6 +107,7 @@ public class LangChain4jConfig {
      */
     @Bean
     public ChatMemoryProvider aiTravelChatMemoryProvider(AiTravelChatMemoryStore aiTravelChatMemoryStore){
+
 
         return memoryId -> MessageWindowChatMemory.builder() // 使用消息窗口记忆
                 .chatMemoryStore(aiTravelChatMemoryStore) // 设置自定义的聊天记忆存储
@@ -125,6 +127,7 @@ public class LangChain4jConfig {
     @Bean
     public EmbeddingStore<TextSegment> pineconeEmbeddingStore(EmbeddingModel embeddingModel){
 
+
         return PineconeEmbeddingStore.builder()
                 .apiKey(System.getenv("PINECONE_API_KEY")) // 获取Pinecone API-KEY
                 .index("ai-travel") // 设置索引名称
@@ -143,18 +146,23 @@ public class LangChain4jConfig {
      * @param pineconeEmbeddingStore Pinecone向量存储
      * @param aiTravelChatMemoryProvider 聊天记忆提供者
      * @param openAiStreamingChatModel OpenAI流式聊天模型
-     * @return
+     * @return AiTravelAssistant
      */
     @Bean
     public AiTravelAssistant aiTravelAssistant(EmbeddingStore<TextSegment> pineconeEmbeddingStore,
                                                ChatMemoryProvider aiTravelChatMemoryProvider,
                                                OpenAiStreamingChatModel openAiStreamingChatModel,
-                                               ToolProvider mcpToolProvider){
+                                               ToolProvider mcpToolProvider,
+                                               EmbeddingModel embeddingModel){
+
         return AiServices.builder(AiTravelAssistant.class)  // 创建AiTravelAssistant服务
                 .chatMemoryProvider(aiTravelChatMemoryProvider) // 设置聊天记忆提供者
                 .streamingChatModel(openAiStreamingChatModel) // 设置流式聊天模型
                 .contentRetriever(EmbeddingStoreContentRetriever.builder() // 使用向量存储内容检索器
                         .embeddingStore(pineconeEmbeddingStore) // 设置向量存储
+                        .embeddingModel(embeddingModel) // 设置向量模型
+                        .minScore(0.75) // 设置最小相似度分数
+                        .maxResults(1) // 设置最大结果数
                         .build()) // 设置内容检索器
                 .toolProvider(mcpToolProvider) // 设置工具提供者
                 .build();
